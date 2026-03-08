@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block title %}{{ action }} Device – {% endblock %}
+
+{% block content %}
+<div class="mb-3">
+  <a href="{% url 'device_list' %}" class="text-muted text-decoration-none small">
+    <i class="bi bi-arrow-left me-1"></i>Back to Devices
+  </a>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header">
+        <i class="bi bi-{% if action == 'Add New' %}plus-circle{% else %}pencil{% endif %} me-2 text-success"></i>
+        {{ action }} Device
+      </div>
+      <div class="card-body">
+        <form method="post" novalidate>
+          {% csrf_token %}
+
+          <div class="row g-3">
+
+            <!-- Row 1: Type, Make, Model -->
+            <div class="col-md-4">
+              <label class="form-label">Device Type <span class="text-danger">*</span></label>
+              {{ form.device_type }}
+              {% if form.device_type.errors %}
+              <div class="text-danger small mt-1">{{ form.device_type.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Make <span class="text-danger">*</span></label>
+              {{ form.make }}
+              {% if form.make.errors %}
+              <div class="text-danger small mt-1">{{ form.make.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Model <span class="text-danger">*</span></label>
+              {{ form.model }}
+              {% if form.model.errors %}
+              <div class="text-danger small mt-1">{{ form.model.errors }}</div>
+              {% endif %}
+            </div>
+
+            <!-- Row 2: IMEI, Serial Number, Status -->
+            <div class="col-md-4">
+              <label class="form-label">IMEI Number</label>
+              {{ form.imei }}
+              <div class="form-text">Phones &amp; tablets only</div>
+              {% if form.imei.errors %}
+              <div class="text-danger small mt-1">{{ form.imei.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Serial Number</label>
+              {{ form.serial_number }}
+              <div class="form-text">All device types</div>
+              {% if form.serial_number.errors %}
+              <div class="text-danger small mt-1">{{ form.serial_number.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Status</label>
+              {{ form.status }}
+            </div>
+
+            <!-- Row 3: CHU -->
+            <div class="col-12">
+              <label class="form-label">Community Health Unit</label>
+              {{ form.chu }}
+              {% if form.chu.errors %}
+              <div class="text-danger small mt-1">{{ form.chu.errors }}</div>
+              {% endif %}
+            </div>
+
+            <!-- Row 4: Assignment — either a system user OR a CHP -->
+            <div class="col-12">
+              <div class="p-3 bg-light rounded">
+                <p class="small fw-semibold mb-2">
+                  <i class="bi bi-person-fill me-1 text-primary"></i>
+                  Assign device to a person — choose one:
+                </p>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label">CHA / Focal Person <span class="text-muted fw-normal"></span></label>
+                    {{ form.assigned_to }}
+                    {% if form.assigned_to.errors %}
+                    <div class="text-danger small mt-1">{{ form.assigned_to.errors }}</div>
+                    {% endif %}
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">CHP <span class="text-muted fw-normal"></span></label>
+                    {{ form.chp_assigned_to }}
+                    {% if form.chp_assigned_to.errors %}
+                    <div class="text-danger small mt-1">{{ form.chp_assigned_to.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                <p class="text-muted small mb-0 mt-2">
+                  <i class="bi bi-info-circle me-1"></i>
+                  Select a CHA/Focal <em>or</em> a CHP — not both.
+                  </a>.
+                </p>
+              </div>
+            </div>
+
+            <!-- Row 4: Dates -->
+            <div class="col-md-6">
+              <label class="form-label">Date Assigned</label>
+              {{ form.date_assigned }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Purchase Date</label>
+              {{ form.purchase_date }}
+            </div>
+
+            <!-- Notes -->
+            <div class="col-12">
+              <label class="form-label">Notes</label>
+              {{ form.notes }}
+            </div>
+
+          </div>
+
+          <div class="d-flex gap-2 mt-4 pt-2 border-top">
+            <button type="submit" class="btn btn-success">
+              <i class="bi bi-check-circle me-1"></i>{{ action }} Device
+            </button>
+            <a href="{% url 'device_list' %}" class="btn btn-outline-secondary">Cancel</a>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
