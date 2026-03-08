@@ -1,0 +1,268 @@
+/* ============================================================
+   CHIS Device Manager – Main Stylesheet
+   ============================================================ */
+
+/* ── Base ─────────────────────────────────────────────────── */
+body {
+  background: #f4f6f9;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 0.9rem;
+}
+
+/* ── Navbar ───────────────────────────────────────────────── */
+.navbar-brand {
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  font-size: 1.1rem;
+}
+
+.navbar .nav-link {
+  font-size: 0.875rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ── Page header ──────────────────────────────────────────── */
+.page-header {
+  margin-bottom: 1.5rem;
+}
+
+.page-header h4 {
+  font-weight: 700;
+  margin-bottom: 0.15rem;
+}
+
+/* ── Stat Cards ───────────────────────────────────────────── */
+.stat-card {
+  border-left: 4px solid;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,.07);
+  transition: transform 0.15s, box-shadow 0.15s;
+  min-height: 100px;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0,0,0,.12);
+}
+
+.stat-card.total       { border-color: #0d6efd; }
+.stat-card.active      { border-color: #198754; }
+.stat-card.damaged     { border-color: #dc3545; }
+.stat-card.under_repair{ border-color: #ffc107; }
+.stat-card.replaced    { border-color: #6c757d; }
+.stat-card.lost        { border-color: #212529; }
+
+.stat-card .stat-icon {
+  font-size: 1.1rem;
+  margin-bottom: 0.4rem;
+  opacity: 0.7;
+}
+
+.stat-card .stat-value {
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.stat-card .stat-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #6c757d;
+  font-weight: 600;
+  margin-top: 0.3rem;
+}
+
+/* ── Status Badges ────────────────────────────────────────── */
+.badge-status {
+  font-size: 0.72rem;
+  padding: 0.3em 0.6em;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.badge-active        { background: #1a56db; color: #fff; }
+.badge-damaged       { background: #dc3545; color: #fff; }
+.badge-under_repair  { background: #ffc107; color: #000; }
+.badge-replaced      { background: #6c757d; color: #fff; }
+.badge-lost          { background: #212529; color: #fff; }
+
+/* ── Cards ────────────────────────────────────────────────── */
+.card {
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.05);
+}
+
+.card-header {
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 0.85rem 1.25rem;
+  font-weight: 600;
+  border-radius: 10px 10px 0 0 !important;
+}
+
+/* ── Table ────────────────────────────────────────────────── */
+.table {
+  font-size: 0.875rem;
+}
+
+.table thead th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #6c757d;
+  font-weight: 600;
+  border-bottom: 2px solid #e9ecef;
+  background: #fafafa;
+}
+
+.table tbody tr:hover {
+  background: #f0f4ff;
+}
+
+.table td {
+  vertical-align: middle;
+  border-color: #f0f0f0;
+}
+
+/* ── Device Icon ──────────────────────────────────────────── */
+.device-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  background: #e8f0fe;
+  color: #1a56db;
+  flex-shrink: 0;
+}
+
+/* ── Activity Log ─────────────────────────────────────────── */
+.activity-item {
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+/* ── Forms ────────────────────────────────────────────────── */
+.form-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.3rem;
+}
+
+.form-control,
+.form-select {
+  font-size: 0.875rem;
+  border-radius: 7px;
+  border: 1px solid #dee2e6;
+  padding: 0.45rem 0.75rem;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #1a56db;
+  box-shadow: 0 0 0 0.2rem rgba(26, 86, 219, 0.15);
+}
+
+/* ── Buttons ──────────────────────────────────────────────── */
+.btn {
+  border-radius: 7px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.btn-success {
+  background: #1a56db;
+  border-color: #1a56db;
+}
+
+.btn-success:hover {
+  background: #1648c0;
+  border-color: #1342b0;
+}
+
+/* ── Login Page ───────────────────────────────────────────── */
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #e8f0fe 0%, #eff6ff 100%);
+}
+
+.login-card {
+  width: 420px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.12);
+  border: none;
+}
+
+.login-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #1a56db;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+/* ── Breakdown Table ──────────────────────────────────────── */
+.breakdown-table th,
+.breakdown-table td {
+  padding: 0.5rem 0.75rem;
+}
+
+/* ── Empty State ──────────────────────────────────────────── */
+.empty-state {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: #adb5bd;
+}
+
+.empty-state i {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+/* ── Detail Page ──────────────────────────────────────────── */
+.detail-label {
+  font-size: 0.78rem;
+  color: #6c757d;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.detail-value {
+  font-size: 0.9rem;
+  color: #212529;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .stat-card .stat-value { font-size: 1.5rem; }
+  .table-responsive { font-size: 0.8rem; }
+}
