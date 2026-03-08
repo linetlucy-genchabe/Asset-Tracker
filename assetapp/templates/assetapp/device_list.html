@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% block title %}Devices – CHIS{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <div>
+    <h4><i class="bi bi-laptop me-2 text-primary"></i>Devices</h4>
+    <p class="text-muted small mb-0">{{ total_count }} device{{ total_count|pluralize }} found</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{% url 'chp_add' %}" class="btn btn-outline-primary btn-sm">
+      <i class="bi bi-person-plus me-1"></i>Add CHP
+    </a>
+    <a href="{% url 'device_add' %}" class="btn btn-primary btn-sm">
+      <i class="bi bi-plus-circle me-1"></i>Add Device
+    </a>
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="card mb-3">
+  <div class="card-body py-3">
+    <form method="get" class="row g-2 align-items-end">
+      <div class="col-md-4">
+        <div class="input-group input-group-sm">
+          <span class="input-group-text bg-light"><i class="bi bi-search text-muted"></i></span>
+          <input type="text" name="q" value="{{ search }}"
+                 class="form-control" placeholder="Name, IMEI, CHU…">
+          {% if search %}
+          <a href="{% url 'device_list' %}" class="btn btn-outline-secondary clear-search">
+            <i class="bi bi-x"></i>
+          </a>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-md-3">
+        <select name="status" class="form-select form-select-sm auto-submit-select">
+          <option value="">All Statuses</option>
+          {% for val, label in statuses %}
+          <option value="{{ val }}" {% if active_status == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select name="type" class="form-select form-select-sm auto-submit-select">
+          <option value="">All Device Types</option>
+          {% for val, label in device_types %}
+          <option value="{{ val }}" {% if active_type == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-success btn-sm w-100">
+          <i class="bi bi-funnel me-1"></i>Filter
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Device Table -->
+<div class="card">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th>Device</th>
+            <th>IMEI</th>
+            <th>Serial No.</th>
+            <th>Assigned To</th>
+            <th>CHU</th>
+            <th>Sub-County</th>
+            <th>Status</th>
+            <th>Updated</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for device in devices %}
+          <tr data-href="{% url 'device_detail' device.pk %}">
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <div class="device-icon">
+                  {% if device.device_type == 'phone' %}<i class="bi bi-phone"></i>
+                  {% elif device.device_type == 'tablet' %}<i class="bi bi-tablet"></i>
+                  {% else %}<i class="bi bi-laptop"></i>{% endif %}
+                </div>
+                <div>
+                  <div class="fw-medium">{{ device.make }} {{ device.model }}</div>
+                  <small class="text-muted">{{ device.get_device_type_display }}</small>
+                </div>
+              </div>
+            </td>
+            <td class="text-muted small">{{ device.imei|default:'—' }}</td>
+            <td class="text-muted small">{{ device.serial_number|default:'—' }}</td>
+            <td>
+              {% if device.assigned_to %}
+                <div class="fw-medium small">{{ device.assigned_to.get_full_name|default:device.assigned_to.username }}</div>
+                <small class="text-muted">{{ device.assigned_to.get_role_display }}</small>
+              {% elif device.chp_assigned_to %}
+                <div class="fw-medium small">{{ device.chp_assigned_to.get_full_name }}</div>
+                <small class="text-muted">CHP</small>
+              {% else %}
+                <span class="text-muted">—</span>
+              {% endif %}
+            </td>
+            <td class="small">{{ device.chu.name|default:'—' }}</td>
+            <td class="small text-muted">{{ device.chu.subcounty.name|default:'—' }}</td>
+            <td>
+              <span class="badge-status badge-{{ device.status }}">{{ device.get_status_display }}</span>
+            </td>
+            <td class="text-muted small">{{ device.updated_at|date:"d M Y" }}</td>
+            <td>
+              <a href="{% url 'device_detail' device.pk %}" class="btn btn-outline-success btn-sm"
+                 onclick="event.stopPropagation()">View</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="9">
+              <div class="empty-state">
+                <i class="bi bi-inbox"></i>
+                No devices found{% if search or active_status or active_type %} matching your filters{% endif %}.
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
