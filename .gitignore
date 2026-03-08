@@ -1,0 +1,34 @@
+virtual/
+*.pyc
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+virtual/
+venv/
+env/
+
+# Django
+*.log
+db.sqlite3
+staticfiles/
+
+# Environment variables (keep secrets safe)
+.env
+*.env
+
+# VS Code
+.vscode/
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Migrations (optional - many teams commit these, but since you're starting fresh)
+# calculator/migrations/get-pip.py
+
+get-pip.py
