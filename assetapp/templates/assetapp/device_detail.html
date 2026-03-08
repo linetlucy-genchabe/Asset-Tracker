@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% block title %}{{ device.make }} {{ device.model }} – Asset Tracker {% endblock %}
+
+{% block content %}
+<div class="mb-3">
+  <a href="{% url 'device_list' %}" class="text-muted text-decoration-none small">
+    <i class="bi bi-arrow-left me-1"></i>Back to Devices
+  </a>
+</div>
+
+<div class="row g-4">
+
+  <!-- Device Info Card -->
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span>
+          {% if device.device_type == 'phone' %}<i class="bi bi-phone me-2 text-success"></i>
+          {% elif device.device_type == 'tablet' %}<i class="bi bi-tablet me-2 text-success"></i>
+          {% else %}<i class="bi bi-laptop me-2 text-success"></i>{% endif %}
+          {{ device.get_device_type_display }}
+        </span>
+        <span class="badge-status badge-{{ device.status }}">{{ device.get_status_display }}</span>
+      </div>
+      <div class="card-body">
+
+        <div class="mb-3">
+          <div class="detail-label">Make / Model</div>
+          <div class="detail-value fw-semibold">{{ device.make }} {{ device.model }}</div>
+        </div>
+
+        <div class="mb-3">
+          <div class="detail-label">IMEI Number</div>
+          <div class="detail-value">{{ device.imei|default:'—' }}</div>
+        </div>
+
+        <div class="mb-3">
+          <div class="detail-label">Serial Number</div>
+          <div class="detail-value">{{ device.serial_number|default:'—' }}</div>
+        </div>
+
+        <div class="mb-3">
+          <div class="detail-label">Assigned To</div>
+          <div class="detail-value">
+            {% if device.assigned_to %}
+              <span class="fw-medium">{{ device.assigned_to.get_full_name|default:device.assigned_to.username }}</span>
+              <br><span class="text-muted small">{{ device.assigned_to.get_role_display }}</span>
+              {% if device.assigned_to.phone %}
+              <br><span class="text-muted small"><i class="bi bi-telephone me-1"></i>{{ device.assigned_to.phone }}</span>
+              {% endif %}
+            {% elif device.chp_assigned_to %}
+              <span class="fw-medium">{{ device.chp_assigned_to.get_full_name }}</span>
+              <br><span class="text-muted small">CHP{% if device.chp_assigned_to.chu %} – {{ device.chp_assigned_to.chu.name }}{% endif %}</span>
+              {% if device.chp_assigned_to.phone %}
+              <br><span class="text-muted small"><i class="bi bi-telephone me-1"></i>{{ device.chp_assigned_to.phone }}</span>
+              {% endif %}
+            {% else %}
+              <span class="text-muted">Unassigned</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <div class="detail-label">Community Health Unit</div>
+          <div class="detail-value">
+            {% if device.chu %}
+              {{ device.chu.name }}
+              <br><span class="text-muted small">{{ device.chu.subcounty.name }}, {{ device.chu.subcounty.county.name }}</span>
+            {% else %}<span class="text-muted">—</span>{% endif %}
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-6">
+            <div class="detail-label">Date Assigned</div>
+            <div class="detail-value">{{ device.date_assigned|date:"d M Y"|default:'—' }}</div>
+          </div>
+          <div class="col-6">
+            <div class="detail-label">Purchase Date</div>
+            <div class="detail-value">{{ device.purchase_date|date:"d M Y"|default:'—' }}</div>
+          </div>
+        </div>
+
+        {% if device.notes %}
+        <div class="mb-3">
+          <div class="detail-label">Notes</div>
+          <div class="detail-value small">{{ device.notes }}</div>
+        </div>
+        {% endif %}
+
+        <div class="mb-0">
+          <div class="detail-label">Added By</div>
+          <div class="detail-value small text-muted">
+            {% if device.added_by %}
+              {{ device.added_by.get_full_name|default:device.added_by.username }}
+            {% else %}—{% endif %}
+            · {{ device.created_at|date:"d M Y" }}
+          </div>
+        </div>
+      </div>
+
+      {% if can_edit %}
+      <div class="card-footer bg-white d-flex gap-2">
+        <a href="{% url 'device_edit' device.pk %}" class="btn btn-outline-success btn-sm flex-fill">
+          <i class="bi bi-pencil me-1"></i>Edit
+        </a>
+        <a href="{% url 'device_status' device.pk %}" class="btn btn-outline-warning btn-sm flex-fill">
+          <i class="bi bi-arrow-repeat me-1"></i>Change Status
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Activity Log -->
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header">
+        <i class="bi bi-clock-history me-2 text-success"></i>Activity Log
+      </div>
+      {% if logs %}
+        {% for log in logs %}
+        <div class="activity-item">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <div class="mb-1">
+                {% if log.old_status %}
+                <span class="badge-status badge-{{ log.old_status }}">{{ log.get_old_status_display }}</span>
+                <i class="bi bi-arrow-right mx-2 text-muted" style="font-size:.75rem"></i>
+                {% endif %}
+                <span class="badge-status badge-{{ log.new_status }}">{{ log.get_new_status_display }}</span>
+              </div>
+              {% if log.note %}
+              <p class="small text-muted mb-1">{{ log.note }}</p>
+              {% endif %}
+              <small class="text-muted">
+                {% if log.changed_by %}by {{ log.changed_by.get_full_name|default:log.changed_by.username }}{% else %}by System{% endif %}
+              </small>
+            </div>
+            <small class="text-muted text-nowrap ms-3">{{ log.timestamp|date:"d M Y · H:i" }}</small>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <i class="bi bi-journal-x"></i>No activity recorded yet.
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}
