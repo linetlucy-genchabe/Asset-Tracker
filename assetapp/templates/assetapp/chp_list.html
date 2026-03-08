@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %}Community Health Promoters – CHIS{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <div>
+    <h4><i class="bi bi-people me-2 text-primary"></i>Community Health Promoters (CHPs)</h4>
+    <p class="text-muted small mb-0">{{ total_count }} CHP{{ total_count|pluralize }} found</p>
+  </div>
+  {% if can_manage %}
+  <a href="{% url 'chp_add' %}" class="btn btn-primary btn-sm">
+    <i class="bi bi-person-plus me-1"></i>Add CHP
+  </a>
+  {% endif %}
+</div>
+
+<!-- Search -->
+<div class="card mb-3">
+  <div class="card-body py-3">
+    <form method="get" class="row g-2 align-items-end">
+      <div class="col-md-6">
+        <div class="input-group input-group-sm">
+          <span class="input-group-text bg-light"><i class="bi bi-search text-muted"></i></span>
+          <input type="text" name="q" value="{{ search }}"
+                 class="form-control" placeholder="Name, phone, CHU…">
+          {% if search %}
+          <a href="{% url 'chp_list' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-x"></i>
+          </a>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary btn-sm w-100">
+          <i class="bi bi-funnel me-1"></i>Search
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- CHP Table -->
+<div class="card">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Community Health Unit</th>
+            <th>Sub-County</th>
+            <th>County</th>
+            <th>Devices</th>
+            {% if can_manage %}<th></th>{% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for chp in chps %}
+          <tr>
+            <td class="fw-medium">{{ chp.first_name }} {{ chp.last_name }}</td>
+            <td class="text-muted small">{{ chp.phone|default:'—' }}</td>
+            <td class="small">{{ chp.chu.name|default:'—' }}</td>
+            <td class="small text-muted">{{ chp.chu.subcounty.name|default:'—' }}</td>
+            <td class="small text-muted">{{ chp.chu.subcounty.county.name|default:'—' }}</td>
+            <td>
+              {% with count=chp.devices.count %}
+              {% if count %}
+                <span class="badge bg-primary rounded-pill">{{ count }}</span>
+              {% else %}
+                <span class="text-muted small">—</span>
+              {% endif %}
+              {% endwith %}
+            </td>
+            {% if can_manage %}
+            <td>
+              <a href="{% url 'chp_edit' chp.pk %}" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-pencil me-1"></i>Edit
+              </a>
+            </td>
+            {% endif %}
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7">
+              <div class="empty-state">
+                <i class="bi bi-people"></i>
+                No CHPs found{% if search %} matching "{{ search }}"{% endif %}.
+                {% if can_manage %}
+                <br><a href="{% url 'chp_add' %}" class="btn btn-primary btn-sm mt-3">
+                  <i class="bi bi-person-plus me-1"></i>Add First CHP
+                </a>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
