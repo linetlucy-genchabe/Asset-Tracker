@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}Profile – CHIS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <i class="bi bi-person-circle me-2 text-success"></i>My Profile
+      </div>
+      <div class="card-body">
+
+        <!-- Role / Scope Info -->
+        <div class="p-3 bg-light rounded mb-4 small">
+          <div class="row g-2">
+            <div class="col-6">
+              <span class="detail-label">Role</span><br>
+              <span class="fw-medium">{{ user.get_role_display }}</span>
+            </div>
+            {% if user.county %}
+            <div class="col-6">
+              <span class="detail-label">County</span><br>
+              <span>{{ user.county.name }}</span>
+            </div>
+            {% endif %}
+            {% if user.subcounty %}
+            <div class="col-6">
+              <span class="detail-label">Sub-County</span><br>
+              <span>{{ user.subcounty.name }}</span>
+            </div>
+            {% endif %}
+            {% if user.chus.exists %}
+            <div class="col-12">
+              <span class="detail-label">CHU(s)</span><br>
+              {% for chu in user.chus.all %}
+              <span class="badge bg-light text-dark border me-1">{{ chu.name }}</span>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <form method="post">
+          {% csrf_token %}
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">First Name</label>
+              {{ form.first_name }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Last Name</label>
+              {{ form.last_name }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Email</label>
+              {{ form.email }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Phone Number</label>
+              {{ form.phone }}
+            </div>
+          </div>
+          <button type="submit" class="btn btn-success mt-4">
+            <i class="bi bi-check-circle me-1"></i>Save Changes
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
