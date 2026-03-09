@@ -21,19 +21,21 @@
 <div class="card mb-3">
   <div class="card-body py-3">
     <form method="get" class="row g-2 align-items-end">
-      <div class="col-md-4">
+      <!-- Search -->
+      <div class="col-md-3">
         <div class="input-group input-group-sm">
           <span class="input-group-text bg-light"><i class="bi bi-search text-muted"></i></span>
           <input type="text" name="q" value="{{ search }}"
                  class="form-control" placeholder="Name, IMEI, CHU…">
           {% if search %}
-          <a href="{% url 'device_list' %}" class="btn btn-outline-secondary clear-search">
+          <a href="{% url 'device_list' %}" class="btn btn-outline-secondary">
             <i class="bi bi-x"></i>
           </a>
           {% endif %}
         </div>
       </div>
-      <div class="col-md-3">
+      <!-- Status -->
+      <div class="col-md-2">
         <select name="status" class="form-select form-select-sm auto-submit-select">
           <option value="">All Statuses</option>
           {% for val, label in statuses %}
@@ -41,22 +43,69 @@
           {% endfor %}
         </select>
       </div>
-      <div class="col-md-3">
+      <!-- Device Type -->
+      <div class="col-md-2">
         <select name="type" class="form-select form-select-sm auto-submit-select">
-          <option value="">All Device Types</option>
+          <option value="">All Types</option>
           {% for val, label in device_types %}
           <option value="{{ val }}" {% if active_type == val %}selected{% endif %}>{{ label }}</option>
           {% endfor %}
         </select>
       </div>
+      <!-- Assigned To -->
       <div class="col-md-2">
-        <button type="submit" class="btn btn-success btn-sm w-100">
+        <select name="assigned" class="form-select form-select-sm auto-submit-select">
+          <option value="">All Assignments</option>
+          <option value="chp"             {% if active_assigned == 'chp' %}selected{% endif %}>CHPs</option>
+          <option value="cha"             {% if active_assigned == 'cha' %}selected{% endif %}>CHAs</option>
+          <option value="subcounty_focal" {% if active_assigned == 'subcounty_focal' %}selected{% endif %}>Sub-County Focal</option>
+          <option value="county_focal"    {% if active_assigned == 'county_focal' %}selected{% endif %}>County Focal</option>
+          <option value="unassigned"      {% if active_assigned == 'unassigned' %}selected{% endif %}>Unassigned (Buffer)</option>
+        </select>
+      </div>
+      <!-- Buttons -->
+      <div class="col-md-3 d-flex gap-2">
+        <button type="submit" class="btn btn-primary btn-sm flex-fill">
           <i class="bi bi-funnel me-1"></i>Filter
         </button>
+        <a href="?q={{ search }}&status={{ active_status }}&type={{ active_type }}&assigned={{ active_assigned }}&export=csv"
+           class="btn btn-outline-success btn-sm flex-fill">
+          <i class="bi bi-download me-1"></i>Export CSV
+        </a>
       </div>
     </form>
   </div>
 </div>
+
+<!-- Active filters display -->
+{% if active_status or active_type or active_assigned or search %}
+<div class="mb-3 d-flex gap-2 flex-wrap align-items-center">
+  <small class="text-muted">Filtered by:</small>
+  {% if search %}
+  <span class="badge bg-light text-dark border">Search: "{{ search }}"</span>
+  {% endif %}
+  {% if active_status %}
+  <span class="badge bg-light text-dark border">Status: {{ active_status }}</span>
+  {% endif %}
+  {% if active_type %}
+  <span class="badge bg-light text-dark border">Type: {{ active_type }}</span>
+  {% endif %}
+  {% if active_assigned %}
+  <span class="badge bg-light text-dark border">
+    Assigned:
+    {% if active_assigned == 'chp' %}CHPs
+    {% elif active_assigned == 'cha' %}CHAs
+    {% elif active_assigned == 'subcounty_focal' %}Sub-County Focal
+    {% elif active_assigned == 'county_focal' %}County Focal
+    {% elif active_assigned == 'unassigned' %}Unassigned (Buffer)
+    {% endif %}
+  </span>
+  {% endif %}
+  <a href="{% url 'device_list' %}" class="text-danger small">
+    <i class="bi bi-x-circle me-1"></i>Clear all
+  </a>
+</div>
+{% endif %}
 
 <!-- Device Table -->
 <div class="card">
@@ -102,7 +151,7 @@
                 <div class="fw-medium small">{{ device.chp_assigned_to.get_full_name }}</div>
                 <small class="text-muted">CHP</small>
               {% else %}
-                <span class="text-muted">—</span>
+                <span class="badge bg-light text-muted border">Unassigned</span>
               {% endif %}
             </td>
             <td class="small">{{ device.chu.name|default:'—' }}</td>
@@ -112,7 +161,7 @@
             </td>
             <td class="text-muted small">{{ device.updated_at|date:"d M Y" }}</td>
             <td>
-              <a href="{% url 'device_detail' device.pk %}" class="btn btn-outline-success btn-sm"
+              <a href="{% url 'device_detail' device.pk %}" class="btn btn-outline-primary btn-sm"
                  onclick="event.stopPropagation()">View</a>
             </td>
           </tr>
@@ -121,7 +170,7 @@
             <td colspan="9">
               <div class="empty-state">
                 <i class="bi bi-inbox"></i>
-                No devices found{% if search or active_status or active_type %} matching your filters{% endif %}.
+                No devices found{% if search or active_status or active_type or active_assigned %} matching your filters{% endif %}.
               </div>
             </td>
           </tr>

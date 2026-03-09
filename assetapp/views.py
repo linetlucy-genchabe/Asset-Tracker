@@ -1,4 +1,6 @@
+import csv
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Count, Q
@@ -36,6 +38,7 @@ def dashboard(request):
     qs      = user.scoped_devices()
     summary = device_summary(qs)
 
+    # ── Location breakdown ────────────────────────────────────
     breakdown = []
     if user.is_country_admin:
         for county in County.objects.all():
@@ -54,14 +57,43 @@ def dashboard(request):
             cqs = qs.filter(chu=chu)
             breakdown.append({'label': chu.name, 'summary': device_summary(cqs)})
 
+    # ── Device type counts ────────────────────────────────────
+    type_counts = {t.value: 0 for t in DeviceType}
+    for row in qs.values('device_type').annotate(n=Count('id')):
+        type_counts[row['device_type']] = row['n']
+
+    # ── Assignment breakdown ──────────────────────────────────
+    def type_counts_for(fqs):
+        tc = {t.value: 0 for t in DeviceType}
+        for row in fqs.values('device_type').annotate(n=Count('id')):
+            tc[row['device_type']] = row['n']
+        tc['total'] = fqs.count()
+        return tc
+
+    chp_qs        = qs.filter(chp_assigned_to__isnull=False)
+    cha_qs        = qs.filter(assigned_to__role='cha')
+    scf_qs        = qs.filter(assigned_to__role='subcounty_focal')
+    cf_qs         = qs.filter(assigned_to__role='county_focal')
+    unassigned_qs = qs.filter(assigned_to__isnull=True, chp_assigned_to__isnull=True)
+
+    assignment_breakdown = [
+        {'label': 'CHPs',                  'counts': type_counts_for(chp_qs)},
+        {'label': 'CHAs',                  'counts': type_counts_for(cha_qs)},
+        {'label': 'Sub-County Focal',      'counts': type_counts_for(scf_qs)},
+        {'label': 'County Focal',          'counts': type_counts_for(cf_qs)},
+        {'label': 'Unassigned (Buffer)',   'counts': type_counts_for(unassigned_qs)},
+    ]
+
     recent_logs = DeviceLog.objects.filter(
         device__in=qs
     ).select_related('device', 'changed_by')[:10]
 
     return render(request, 'assetapp/dashboard.html', {
-        'summary':     summary,
-        'breakdown':   breakdown,
-        'recent_logs': recent_logs,
+        'summary':              summary,
+        'breakdown':            breakdown,
+        'type_counts':          type_counts,
+        'assignment_breakdown': assignment_breakdown,
+        'recent_logs':          recent_logs,
     })
 
 
@@ -69,16 +101,27 @@ def dashboard(request):
 
 @login_required
 def device_list(request):
-    user   = request.user
-    qs     = user.scoped_devices()
-    status = request.GET.get('status', '')
-    dtype  = request.GET.get('type', '')
-    search = request.GET.get('q', '').strip()
+    user     = request.user
+    qs       = user.scoped_devices()
+    status   = request.GET.get('status', '')
+    dtype    = request.GET.get('type', '')
+    search   = request.GET.get('q', '').strip()
+    assigned = request.GET.get('assigned', '')
 
     if status:
         qs = qs.filter(status=status)
     if dtype:
         qs = qs.filter(device_type=dtype)
+    if assigned == 'chp':
+        qs = qs.filter(chp_assigned_to__isnull=False)
+    elif assigned == 'cha':
+        qs = qs.filter(assigned_to__role='cha')
+    elif assigned == 'subcounty_focal':
+        qs = qs.filter(assigned_to__role='subcounty_focal')
+    elif assigned == 'county_focal':
+        qs = qs.filter(assigned_to__role='county_focal')
+    elif assigned == 'unassigned':
+        qs = qs.filter(assigned_to__isnull=True, chp_assigned_to__isnull=True)
     if search:
         qs = qs.filter(
             Q(make__icontains=search)  |
@@ -87,15 +130,60 @@ def device_list(request):
             Q(serial_number__icontains=search)  |
             Q(assigned_to__first_name__icontains=search) |
             Q(assigned_to__last_name__icontains=search)  |
+            Q(chp_assigned_to__first_name__icontains=search) |
+            Q(chp_assigned_to__last_name__icontains=search)  |
             Q(chu__name__icontains=search)
         )
 
+    # CSV export
+    if request.GET.get('export') == 'csv':
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="devices.csv"'
+        writer = csv.writer(response)
+        writer.writerow([
+            'Device Type', 'Make', 'Model', 'IMEI', 'Serial Number',
+            'Status', 'Assigned To', 'Role', 'CHU', 'Sub-County', 'County',
+            'Date Assigned', 'Purchase Date', 'Added By', 'Last Updated',
+        ])
+        for d in qs.select_related(
+            'assigned_to', 'chp_assigned_to', 'chu__subcounty__county', 'added_by'
+        ):
+            if d.assigned_to:
+                assigned_name = d.assigned_to.get_full_name() or d.assigned_to.username
+                assigned_role = d.assigned_to.get_role_display()
+            elif d.chp_assigned_to:
+                assigned_name = d.chp_assigned_to.get_full_name()
+                assigned_role = 'CHP'
+            else:
+                assigned_name = ''
+                assigned_role = 'Unassigned'
+
+            writer.writerow([
+                d.get_device_type_display(),
+                d.make,
+                d.model,
+                d.imei or '',
+                d.serial_number or '',
+                d.get_status_display(),
+                assigned_name,
+                assigned_role,
+                d.chu.name if d.chu else '',
+                d.chu.subcounty.name if d.chu else '',
+                d.chu.subcounty.county.name if d.chu else '',
+                d.date_assigned or '',
+                d.purchase_date or '',
+                d.added_by.get_full_name() if d.added_by else '',
+                d.updated_at.strftime('%Y-%m-%d'),
+            ])
+        return response
+
     return render(request, 'assetapp/device_list.html', {
-        'devices':      qs,
-        'statuses':     DeviceStatus.choices,
-        'device_types': DeviceType.choices,
+        'devices':       qs,
+        'statuses':      DeviceStatus.choices,
+        'device_types':  DeviceType.choices,
         'active_status': status,
         'active_type':   dtype,
+        'active_assigned': assigned,
         'search':        search,
         'total_count':   qs.count(),
     })

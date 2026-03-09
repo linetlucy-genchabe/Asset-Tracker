@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Dashboard – Asset Tracker{% endblock %}
+{% block title %}Dashboard – CHIS Devices{% endblock %}
 
 {% block content %}
 <div class="page-header d-flex justify-content-between align-items-start">
@@ -24,62 +24,147 @@
   </div>
 </div>
 
-<!-- ── Summary Cards ───────────────────────────────────────────── -->
+<!-- ── Status Cards ─────────────────────────────────────────── -->
+<p class="text-muted small fw-semibold text-uppercase mb-2" style="letter-spacing:.5px">By Status</p>
+<div class="row g-3 mb-2">
+  <div class="col-6 col-sm-4 col-lg-2">
+    <a href="{% url 'device_list' %}" class="text-decoration-none">
+      <div class="stat-card total p-3">
+        <div class="stat-icon"><i class="bi bi-collection"></i></div>
+        <div class="stat-value text-primary">{{ summary.total|default:"0" }}</div>
+        <div class="stat-label">Total</div>
+      </div>
+    </a>
+  </div>
+  <div class="col-6 col-sm-4 col-lg-2">
+    <a href="{% url 'device_list' %}?status=active" class="text-decoration-none">
+      <div class="stat-card active p-3">
+        <div class="stat-icon text-success"><i class="bi bi-check-circle"></i></div>
+        <div class="stat-value text-success">{{ summary.active|default:"0" }}</div>
+        <div class="stat-label">Active</div>
+      </div>
+    </a>
+  </div>
+  <div class="col-6 col-sm-4 col-lg-2">
+    <a href="{% url 'device_list' %}?status=damaged" class="text-decoration-none">
+      <div class="stat-card damaged p-3">
+        <div class="stat-icon text-danger"><i class="bi bi-exclamation-triangle"></i></div>
+        <div class="stat-value text-danger">{{ summary.damaged|default:"0" }}</div>
+        <div class="stat-label">Damaged</div>
+      </div>
+    </a>
+  </div>
+  <div class="col-6 col-sm-4 col-lg-2">
+    <a href="{% url 'device_list' %}?status=under_repair" class="text-decoration-none">
+      <div class="stat-card under_repair p-3">
+        <div class="stat-icon text-warning"><i class="bi bi-tools"></i></div>
+        <div class="stat-value text-warning">{{ summary.under_repair|default:"0" }}</div>
+        <div class="stat-label">Under Repair</div>
+      </div>
+    </a>
+  </div>
+  <div class="col-6 col-sm-4 col-lg-2">
+    <a href="{% url 'device_list' %}?status=replaced" class="text-decoration-none">
+      <div class="stat-card replaced p-3">
+        <div class="stat-icon text-secondary"><i class="bi bi-arrow-repeat"></i></div>
+        <div class="stat-value text-secondary">{{ summary.replaced|default:"0" }}</div>
+        <div class="stat-label">Replaced</div>
+      </div>
+    </a>
+  </div>
+  <div class="col-6 col-sm-4 col-lg-2">
+    <a href="{% url 'device_list' %}?status=lost" class="text-decoration-none">
+      <div class="stat-card lost p-3">
+        <div class="stat-icon text-dark"><i class="bi bi-question-circle"></i></div>
+        <div class="stat-value text-dark">{{ summary.lost|default:"0" }}</div>
+        <div class="stat-label">Lost</div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- ── Device Type Cards ────────────────────────────────────── -->
+<p class="text-muted small fw-semibold text-uppercase mb-2 mt-4" style="letter-spacing:.5px">By Device Type</p>
 <div class="row g-3 mb-4">
-
-  <div class="col-6 col-sm-4 col-lg-2">
-    <div class="stat-card total p-3">
-      <div class="stat-icon"><i class="bi bi-collection"></i></div>
-      <div class="stat-value text-primary">{{ summary.total|default:"0" }}</div>
-      <div class="stat-label">Total</div>
-    </div>
+  <div class="col-4">
+    <a href="{% url 'device_list' %}?type=phone" class="text-decoration-none">
+      <div class="stat-card total p-3 text-center">
+        <div class="stat-icon text-primary"><i class="bi bi-phone"></i></div>
+        <div class="stat-value text-primary">{{ type_counts.phone|default:"0" }}</div>
+        <div class="stat-label">Phones</div>
+      </div>
+    </a>
   </div>
-
-  <div class="col-6 col-sm-4 col-lg-2">
-    <div class="stat-card active p-3">
-      <div class="stat-icon text-success"><i class="bi bi-check-circle"></i></div>
-      <div class="stat-value text-success">{{ summary.active|default:"0" }}</div>
-      <div class="stat-label">Active</div>
-    </div>
+  <div class="col-4">
+    <a href="{% url 'device_list' %}?type=tablet" class="text-decoration-none">
+      <div class="stat-card total p-3 text-center">
+        <div class="stat-icon text-primary"><i class="bi bi-tablet"></i></div>
+        <div class="stat-value text-primary">{{ type_counts.tablet|default:"0" }}</div>
+        <div class="stat-label">Tablets</div>
+      </div>
+    </a>
   </div>
-
-  <div class="col-6 col-sm-4 col-lg-2">
-    <div class="stat-card damaged p-3">
-      <div class="stat-icon text-danger"><i class="bi bi-exclamation-triangle"></i></div>
-      <div class="stat-value text-danger">{{ summary.damaged|default:"0" }}</div>
-      <div class="stat-label">Damaged</div>
-    </div>
+  <div class="col-4">
+    <a href="{% url 'device_list' %}?type=laptop" class="text-decoration-none">
+      <div class="stat-card total p-3 text-center">
+        <div class="stat-icon text-primary"><i class="bi bi-laptop"></i></div>
+        <div class="stat-value text-primary">{{ type_counts.laptop|default:"0" }}</div>
+        <div class="stat-label">Laptops</div>
+      </div>
+    </a>
   </div>
-
-  <div class="col-6 col-sm-4 col-lg-2">
-    <div class="stat-card under_repair p-3">
-      <div class="stat-icon text-warning"><i class="bi bi-tools"></i></div>
-      <div class="stat-value text-warning">{{ summary.under_repair|default:"0" }}</div>
-      <div class="stat-label">Under Repair</div>
-    </div>
-  </div>
-
-  <div class="col-6 col-sm-4 col-lg-2">
-    <div class="stat-card replaced p-3">
-      <div class="stat-icon text-secondary"><i class="bi bi-arrow-repeat"></i></div>
-      <div class="stat-value text-secondary">{{ summary.replaced|default:"0" }}</div>
-      <div class="stat-label">Replaced</div>
-    </div>
-  </div>
-
-  <div class="col-6 col-sm-4 col-lg-2">
-    <div class="stat-card lost p-3">
-      <div class="stat-icon text-dark"><i class="bi bi-question-circle"></i></div>
-      <div class="stat-value text-dark">{{ summary.lost|default:"0" }}</div>
-      <div class="stat-label">Lost</div>
-    </div>
-  </div>
-
 </div>
 
 <div class="row g-4">
 
-  <!-- ── Breakdown Table ──────────────────────────────────────── -->
+  <!-- ── Assignment Breakdown ─────────────────────────────── -->
+  <div class="col-lg-5">
+    <div class="card">
+      <div class="card-header">
+        <i class="bi bi-people me-2 text-primary"></i>By Assignment
+      </div>
+      <div class="card-body p-0">
+        <table class="table breakdown-table mb-0">
+          <thead>
+            <tr>
+              <th>Assigned To</th>
+              <th class="text-center"><i class="bi bi-phone" title="Phones"></i></th>
+              <th class="text-center"><i class="bi bi-tablet" title="Tablets"></i></th>
+              <th class="text-center"><i class="bi bi-laptop" title="Laptops"></i></th>
+              <th class="text-center fw-bold">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in assignment_breakdown %}
+            <tr>
+              <td>
+                {% if row.label == 'CHPs' %}
+                  <a href="{% url 'device_list' %}?assigned=chp" class="text-decoration-none">{{ row.label }}</a>
+                {% elif row.label == 'CHAs' %}
+                  <a href="{% url 'device_list' %}?assigned=cha" class="text-decoration-none">{{ row.label }}</a>
+                {% elif row.label == 'Sub-County Focal' %}
+                  <a href="{% url 'device_list' %}?assigned=subcounty_focal" class="text-decoration-none">{{ row.label }}</a>
+                {% elif row.label == 'County Focal' %}
+                  <a href="{% url 'device_list' %}?assigned=county_focal" class="text-decoration-none">{{ row.label }}</a>
+                {% elif row.label == 'Unassigned (Buffer)' %}
+                  <a href="{% url 'device_list' %}?assigned=unassigned" class="text-decoration-none">{{ row.label }}</a>
+                {% else %}
+                  {{ row.label }}
+                {% endif %}
+              </td>
+              <td class="text-center">{{ row.counts.phone|default:"0" }}</td>
+              <td class="text-center">{{ row.counts.tablet|default:"0" }}</td>
+              <td class="text-center">{{ row.counts.laptop|default:"0" }}</td>
+              <td class="text-center fw-bold">{{ row.counts.total|default:"0" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Location Breakdown ───────────────────────────────── -->
   {% if breakdown %}
   <div class="col-lg-7">
     <div class="card">
@@ -130,35 +215,39 @@
   </div>
   {% endif %}
 
-  <!-- ── Recent Activity ──────────────────────────────────────── -->
-  <div class="col-lg-{% if breakdown %}5{% else %}12{% endif %}">
+  <!-- ── Recent Activity ──────────────────────────────────── -->
+  <div class="col-12">
     <div class="card">
       <div class="card-header">
         <i class="bi bi-clock-history me-2 text-primary"></i>Recent Activity
       </div>
       {% if recent_logs %}
+        <div class="row">
         {% for log in recent_logs %}
-        <div class="activity-item">
-          <div class="d-flex justify-content-between align-items-start">
-            <div>
-              <a href="{% url 'device_detail' log.device.pk %}" class="text-decoration-none fw-medium small text-dark">
-                {{ log.device.make }} {{ log.device.model }}
-              </a>
-              <div class="mt-1">
-                {% if log.old_status %}
-                <span class="badge-status badge-{{ log.old_status }}">{{ log.get_old_status_display }}</span>
-                <i class="bi bi-arrow-right mx-1 text-muted" style="font-size:.7rem"></i>
+        <div class="col-lg-6">
+          <div class="activity-item">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <a href="{% url 'device_detail' log.device.pk %}" class="text-decoration-none fw-medium small text-dark">
+                  {{ log.device.make }} {{ log.device.model }}
+                </a>
+                <div class="mt-1">
+                  {% if log.old_status %}
+                  <span class="badge-status badge-{{ log.old_status }}">{{ log.get_old_status_display }}</span>
+                  <i class="bi bi-arrow-right mx-1 text-muted" style="font-size:.7rem"></i>
+                  {% endif %}
+                  <span class="badge-status badge-{{ log.new_status }}">{{ log.get_new_status_display }}</span>
+                </div>
+                {% if log.changed_by %}
+                <small class="text-muted">by {{ log.changed_by.get_full_name|default:log.changed_by.username }}</small>
                 {% endif %}
-                <span class="badge-status badge-{{ log.new_status }}">{{ log.get_new_status_display }}</span>
               </div>
-              {% if log.changed_by %}
-              <small class="text-muted">by {{ log.changed_by.get_full_name|default:log.changed_by.username }}</small>
-              {% endif %}
+              <small class="text-muted text-nowrap ms-3">{{ log.timestamp|date:"d M" }}</small>
             </div>
-            <small class="text-muted text-nowrap ms-3">{{ log.timestamp|date:"d M" }}</small>
           </div>
         </div>
         {% endfor %}
+        </div>
       {% else %}
         <div class="empty-state">
           <i class="bi bi-clock"></i>No activity yet
