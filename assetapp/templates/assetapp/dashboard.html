@@ -24,7 +24,7 @@
   </div>
 </div>
 
-<!-- ── All Devices Status ────────────────────────────────────── -->
+<!-- ── All Devices ───────────────────────────────────────────── -->
 <p class="text-muted small fw-semibold text-uppercase mb-2" style="letter-spacing:.5px">
   <i class="bi bi-collection me-1"></i>All Devices
 </p>
@@ -85,125 +85,147 @@
   </div>
 </div>
 
-<!-- ── CHP Devices ───────────────────────────────────────────── -->
-<p class="text-muted small fw-semibold text-uppercase mb-2" style="letter-spacing:.5px">
-  <i class="bi bi-phone me-1"></i>CHP Devices
-</p>
-<div class="row g-3 mb-4">
-  <div class="col-6 col-sm-4 col-lg-2">
-    <a href="{% url 'device_list' %}?assigned=chp" class="text-decoration-none">
-      <div class="stat-card total p-3">
-        <div class="stat-icon"><i class="bi bi-collection"></i></div>
-        <div class="stat-value text-primary">{{ chp_summary.total|default:"0" }}</div>
-        <div class="stat-label">Total</div>
-      </div>
-    </a>
+<!-- ── CHP / CHA Tabs ────────────────────────────────────────── -->
+<div class="card mb-4">
+  <div class="card-body pb-0 pt-3 px-3">
+    <ul class="nav role-tabs" id="roleTabs">
+      <li class="nav-item">
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#chpTab">
+          <i class="bi bi-phone me-1"></i>CHP Devices
+          <span class="badge bg-primary ms-1">{{ chp_summary.total|default:"0" }}</span>
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#chaTab">
+          <i class="bi bi-tablet me-1"></i>CHA Devices
+          <span class="badge bg-primary ms-1">{{ cha_summary.total|default:"0" }}</span>
+        </button>
+      </li>
+    </ul>
   </div>
-  <div class="col-6 col-sm-4 col-lg-2">
-    <a href="{% url 'device_list' %}?assigned=chp&status=active" class="text-decoration-none">
-      <div class="stat-card active p-3">
-        <div class="stat-icon text-success"><i class="bi bi-check-circle"></i></div>
-        <div class="stat-value text-success">{{ chp_summary.active|default:"0" }}</div>
-        <div class="stat-label">Active</div>
-      </div>
-    </a>
-  </div>
-  <div class="col-6 col-sm-4 col-lg-2">
-    <a href="{% url 'device_list' %}?assigned=chp&status=damaged" class="text-decoration-none">
-      <div class="stat-card damaged p-3">
-        <div class="stat-icon text-danger"><i class="bi bi-exclamation-triangle"></i></div>
-        <div class="stat-value text-danger">{{ chp_summary.damaged|default:"0" }}</div>
-        <div class="stat-label">Damaged</div>
-      </div>
-    </a>
-  </div>
-  <div class="col-6 col-sm-4 col-lg-2">
-    <a href="{% url 'device_list' %}?assigned=chp&status=under_repair" class="text-decoration-none">
-      <div class="stat-card under_repair p-3">
-        <div class="stat-icon text-warning"><i class="bi bi-tools"></i></div>
-        <div class="stat-value text-warning">{{ chp_summary.under_repair|default:"0" }}</div>
-        <div class="stat-label">Under Repair</div>
-      </div>
-    </a>
-  </div>
-  <div class="col-6 col-sm-4 col-lg-2">
-    <a href="{% url 'device_list' %}?assigned=chp&status=replaced" class="text-decoration-none">
-      <div class="stat-card replaced p-3">
-        <div class="stat-icon text-secondary"><i class="bi bi-arrow-repeat"></i></div>
-        <div class="stat-value text-secondary">{{ chp_summary.replaced|default:"0" }}</div>
-        <div class="stat-label">Replaced</div>
-      </div>
-    </a>
-  </div>
-  <div class="col-6 col-sm-4 col-lg-2">
-    <a href="{% url 'device_list' %}?assigned=chp&status=lost" class="text-decoration-none">
-      <div class="stat-card lost p-3">
-        <div class="stat-icon text-dark"><i class="bi bi-question-circle"></i></div>
-        <div class="stat-value text-dark">{{ chp_summary.lost|default:"0" }}</div>
-        <div class="stat-label">Lost</div>
-      </div>
-    </a>
-  </div>
-</div>
 
-<!-- ── CHA Devices ───────────────────────────────────────────── -->
-<p class="text-muted small fw-semibold text-uppercase mb-2" style="letter-spacing:.5px">
-  <i class="bi bi-tablet me-1"></i>CHA Devices
-</p>
-<div class="row g-3 mb-4">
-  <div class="col-6 col-sm-4 col-lg-2">
-    <a href="{% url 'device_list' %}?assigned=cha" class="text-decoration-none">
-      <div class="stat-card total p-3">
-        <div class="stat-icon"><i class="bi bi-collection"></i></div>
-        <div class="stat-value text-primary">{{ cha_summary.total|default:"0" }}</div>
-        <div class="stat-label">Total</div>
+  <div class="tab-content p-3">
+
+    <!-- CHP Tab -->
+    <div class="tab-pane fade show active" id="chpTab">
+      <div class="row g-3">
+        <div class="col-6 col-sm-4 col-lg-2">
+          <a href="{% url 'device_list' %}?assigned=chp" class="text-decoration-none">
+            <div class="stat-card total p-3">
+              <div class="stat-icon"><i class="bi bi-collection"></i></div>
+              <div class="stat-value text-primary">{{ chp_summary.total|default:"0" }}</div>
+              <div class="stat-label">Total</div>
+            </div>
+          </a>
+        </div>
+        <div class="col-6 col-sm-4 col-lg-2">
+          <a href="{% url 'device_list' %}?assigned=chp&status=active" class="text-decoration-none">
+            <div class="stat-card active p-3">
+              <div class="stat-icon text-success"><i class="bi bi-check-circle"></i></div>
+              <div class="stat-value text-success">{{ chp_summary.active|default:"0" }}</div>
+              <div class="stat-label">Active</div>
+            </div>
+          </a>
+        </div>
+        <div class="col-6 col-sm-4 col-lg-2">
+          <a href="{% url 'device_list' %}?assigned=chp&status=damaged" class="text-decoration-none">
+            <div class="stat-card damaged p-3">
+              <div class="stat-icon text-danger"><i class="bi bi-exclamation-triangle"></i></div>
+              <div class="stat-value text-danger">{{ chp_summary.damaged|default:"0" }}</div>
+              <div class="stat-label">Damaged</div>
+            </div>
+          </a>
+        </div>
+        <div class="col-6 col-sm-4 col-lg-2">
+          <a href="{% url 'device_list' %}?assigned=chp&status=under_repair" class="text-decoration-none">
+            <div class="stat-card under_repair p-3">
+              <div class="stat-icon text-warning"><i class="bi bi-tools"></i></div>
+              <div class="stat-value text-warning">{{ chp_summary.under_repair|default:"0" }}</div>
+              <div class="stat-label">Under Repair</div>
+            </div>
+          </a>
+        </div>
+        <div class="col-6 col-sm-4 col-lg-2">
+          <a href="{% url 'device_list' %}?assigned=chp&status=replaced" class="text-decoration-none">
+            <div class="stat-card replaced p-3">
+              <div class="stat-icon text-secondary"><i class="bi bi-arrow-repeat"></i></div>
+              <div class="stat-value text-secondary">{{ chp_summary.replaced|default:"0" }}</div>
+              <div class="stat-label">Replaced</div>
+            </div>
+          </a>
+        </div>
+        <div class="col-6 col-sm-4 col-lg-2">
+          <a href="{% url 'device_list' %}?assigned=chp&status=lost" class="text-decoration-none">
+            <div class="stat-card lost p-3">
+              <div class="stat-icon text-dark"><i class="bi bi-question-circle"></i></div>
+              <div class="stat-value text-dark">{{ chp_summary.lost|default:"0" }}</div>
+              <div class="stat-label">Lost</div>
+            </div>
+          </a>
+        </div>
       </div>
-    </a>
-  </div>
-  <div class="col-6 col-sm-4 col-lg-2">
-    <a href="{% url 'device_list' %}?assigned=cha&status=active" class="text-decoration-none">
-      <div class="stat-card active p-3">
-        <div class="stat-icon text-success"><i class="bi bi-check-circle"></i></div>
-        <div class="stat-value text-success">{{ cha_summary.active|default:"0" }}</div>
-        <div class="stat-label">Active</div>
+    </div>
+
+    <!-- CHA Tab -->
+    <div class="tab-pane fade" id="chaTab">
+      <div class="row g-3">
+        <div class="col-6 col-sm-4 col-lg-2">
+          <a href="{% url 'device_list' %}?assigned=cha" class="text-decoration-none">
+            <div class="stat-card total p-3">
+              <div class="stat-icon"><i class="bi bi-collection"></i></div>
+              <div class="stat-value text-primary">{{ cha_summary.total|default:"0" }}</div>
+              <div class="stat-label">Total</div>
+            </div>
+          </a>
+        </div>
+        <div class="col-6 col-sm-4 col-lg-2">
+          <a href="{% url 'device_list' %}?assigned=cha&status=active" class="text-decoration-none">
+            <div class="stat-card active p-3">
+              <div class="stat-icon text-success"><i class="bi bi-check-circle"></i></div>
+              <div class="stat-value text-success">{{ cha_summary.active|default:"0" }}</div>
+              <div class="stat-label">Active</div>
+            </div>
+          </a>
+        </div>
+        <div class="col-6 col-sm-4 col-lg-2">
+          <a href="{% url 'device_list' %}?assigned=cha&status=damaged" class="text-decoration-none">
+            <div class="stat-card damaged p-3">
+              <div class="stat-icon text-danger"><i class="bi bi-exclamation-triangle"></i></div>
+              <div class="stat-value text-danger">{{ cha_summary.damaged|default:"0" }}</div>
+              <div class="stat-label">Damaged</div>
+            </div>
+          </a>
+        </div>
+        <div class="col-6 col-sm-4 col-lg-2">
+          <a href="{% url 'device_list' %}?assigned=cha&status=under_repair" class="text-decoration-none">
+            <div class="stat-card under_repair p-3">
+              <div class="stat-icon text-warning"><i class="bi bi-tools"></i></div>
+              <div class="stat-value text-warning">{{ cha_summary.under_repair|default:"0" }}</div>
+              <div class="stat-label">Under Repair</div>
+            </div>
+          </a>
+        </div>
+        <div class="col-6 col-sm-4 col-lg-2">
+          <a href="{% url 'device_list' %}?assigned=cha&status=replaced" class="text-decoration-none">
+            <div class="stat-card replaced p-3">
+              <div class="stat-icon text-secondary"><i class="bi bi-arrow-repeat"></i></div>
+              <div class="stat-value text-secondary">{{ cha_summary.replaced|default:"0" }}</div>
+              <div class="stat-label">Replaced</div>
+            </div>
+          </a>
+        </div>
+        <div class="col-6 col-sm-4 col-lg-2">
+          <a href="{% url 'device_list' %}?assigned=cha&status=lost" class="text-decoration-none">
+            <div class="stat-card lost p-3">
+              <div class="stat-icon text-dark"><i class="bi bi-question-circle"></i></div>
+              <div class="stat-value text-dark">{{ cha_summary.lost|default:"0" }}</div>
+              <div class="stat-label">Lost</div>
+            </div>
+          </a>
+        </div>
       </div>
-    </a>
-  </div>
-  <div class="col-6 col-sm-4 col-lg-2">
-    <a href="{% url 'device_list' %}?assigned=cha&status=damaged" class="text-decoration-none">
-      <div class="stat-card damaged p-3">
-        <div class="stat-icon text-danger"><i class="bi bi-exclamation-triangle"></i></div>
-        <div class="stat-value text-danger">{{ cha_summary.damaged|default:"0" }}</div>
-        <div class="stat-label">Damaged</div>
-      </div>
-    </a>
-  </div>
-  <div class="col-6 col-sm-4 col-lg-2">
-    <a href="{% url 'device_list' %}?assigned=cha&status=under_repair" class="text-decoration-none">
-      <div class="stat-card under_repair p-3">
-        <div class="stat-icon text-warning"><i class="bi bi-tools"></i></div>
-        <div class="stat-value text-warning">{{ cha_summary.under_repair|default:"0" }}</div>
-        <div class="stat-label">Under Repair</div>
-      </div>
-    </a>
-  </div>
-  <div class="col-6 col-sm-4 col-lg-2">
-    <a href="{% url 'device_list' %}?assigned=cha&status=replaced" class="text-decoration-none">
-      <div class="stat-card replaced p-3">
-        <div class="stat-icon text-secondary"><i class="bi bi-arrow-repeat"></i></div>
-        <div class="stat-value text-secondary">{{ cha_summary.replaced|default:"0" }}</div>
-        <div class="stat-label">Replaced</div>
-      </div>
-    </a>
-  </div>
-  <div class="col-6 col-sm-4 col-lg-2">
-    <a href="{% url 'device_list' %}?assigned=cha&status=lost" class="text-decoration-none">
-      <div class="stat-card lost p-3">
-        <div class="stat-icon text-dark"><i class="bi bi-question-circle"></i></div>
-        <div class="stat-value text-dark">{{ cha_summary.lost|default:"0" }}</div>
-        <div class="stat-label">Lost</div>
-      </div>
-    </a>
+    </div>
+
   </div>
 </div>
 
@@ -264,8 +286,7 @@
         <i class="bi bi-table me-2 text-primary"></i>
         {% if user.is_country_admin %}County Breakdown
         {% elif user.is_county_focal %}Sub-County Breakdown
-        {% else %}CHU Breakdown
-        {% endif %}
+        {% else %}CHU Breakdown{% endif %}
       </div>
       <div class="card-body p-0">
         <div class="table-responsive">
