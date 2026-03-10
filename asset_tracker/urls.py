@@ -25,5 +25,5 @@ urlpatterns = [
     path('', include('assetapp.urls')),
     path('login/',  auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    path('favicon.ico', RedirectView.as_view(url=static('images/favicon.png'), permanent=True)),
+    path('favicon.ico', RedirectView.as_view(url='/static/images/favicon.png', permanent=True)),
 ]
