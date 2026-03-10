@@ -90,7 +90,7 @@ body {
   font-weight: 600;
 }
 
-.badge-active        { background: #1a56db; color: #fff; }
+.badge-active        { background: #1e3a5f; color: #fff; }
 .badge-damaged       { background: #dc3545; color: #fff; }
 .badge-under_repair  { background: #ffc107; color: #000; }
 .badge-replaced      { background: #6c757d; color: #fff; }
@@ -145,7 +145,7 @@ body {
   justify-content: center;
   font-size: 1rem;
   background: #e8f0fe;
-  color: #1a56db;
+  color: #1e3a5f;
   flex-shrink: 0;
 }
 
@@ -178,7 +178,7 @@ body {
 
 .form-control:focus,
 .form-select:focus {
-  border-color: #1a56db;
+  border-color: #1e3a5f;
   box-shadow: 0 0 0 0.2rem rgba(26, 86, 219, 0.15);
 }
 
@@ -190,8 +190,8 @@ body {
 }
 
 .btn-success {
-  background: #1a56db;
-  border-color: #1a56db;
+  background: #1e3a5f;
+  border-color: #1e3a5f;
 }
 
 .btn-success:hover {
@@ -219,7 +219,7 @@ body {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: #1a56db;
+  background: #1e3a5f;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -265,4 +265,39 @@ body {
 @media (max-width: 768px) {
   .stat-card .stat-value { font-size: 1.5rem; }
   .table-responsive { font-size: 0.8rem; }
+}
+
+/* ── Navbar dark navy override ─────────────────────────────── */
+.navbar.bg-primary {
+  background-color: #1e3a5f !important;
+}
+
+/* ── Dashboard role tabs ────────────────────────────────────── */
+.role-tabs {
+  border-bottom: 2px solid #e5e7eb;
+  margin-bottom: 1rem;
+}
+.role-tabs .nav-link {
+  color: #6b7280;
+  font-weight: 500;
+  padding: .5rem 1.25rem;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  background: none;
+  border-radius: 0;
+  transition: color .15s, border-color .15s;
+}
+.role-tabs .nav-link:hover {
+  color: #1e3a5f;
+  border-bottom-color: #c7d2fe;
+}
+.role-tabs .nav-link.active {
+  color: #1e3a5f;
+  border-bottom-color: #1e3a5f;
+  font-weight: 600;
+}
+.role-tabs .nav-link .badge {
+  font-size: .7rem;
+  padding: .2em .5em;
 }
