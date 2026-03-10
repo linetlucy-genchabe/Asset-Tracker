@@ -57,11 +57,6 @@ def dashboard(request):
             cqs = qs.filter(chu=chu)
             breakdown.append({'label': chu.name, 'summary': device_summary(cqs)})
 
-    # ── Device type counts ────────────────────────────────────
-    type_counts = {t.value: 0 for t in DeviceType}
-    for row in qs.values('device_type').annotate(n=Count('id')):
-        type_counts[row['device_type']] = row['n']
-
     # ── Assignment breakdown ──────────────────────────────────
     def type_counts_for(fqs):
         tc = {t.value: 0 for t in DeviceType}
@@ -88,10 +83,14 @@ def dashboard(request):
         device__in=qs
     ).select_related('device', 'changed_by')[:10]
 
+    chp_summary = device_summary(chp_qs)
+    cha_summary = device_summary(cha_qs)
+
     return render(request, 'assetapp/dashboard.html', {
         'summary':              summary,
         'breakdown':            breakdown,
-        'type_counts':          type_counts,
+        'chp_summary':          chp_summary,
+        'cha_summary':          cha_summary,
         'assignment_breakdown': assignment_breakdown,
         'recent_logs':          recent_logs,
     })
